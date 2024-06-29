@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:music/core/theme/app_pallete.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/music/viewmodel/bloc/music_bloc.dart';
 import 'package:music/features/music/viewmodel/cubit/audiolist_cubit.dart';
 import 'package:music/features/music/viewmodel/music_model.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    BlocProvider.of<AudiolistCubit>(context).getList();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 154,
                                   width: 134,
                                   decoration: BoxDecoration(
-                                    color: Colors.red,
+                                    color: AppPallete.inactiveSeekColor,
                                     borderRadius: BorderRadius.circular(14),
                                   ),
                                   child: Image.network(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/features/music/view/pages/home.dart';
 import 'package:music/features/music/view/widgets/widgets.dart';
+import 'package:music/features/music/viewmodel/cubit/audiolist_cubit.dart';
 import 'package:music/features/upload/view/pages/upload.dart';
 
 class BottomNavItems extends StatefulWidget {
@@ -13,6 +15,13 @@ class BottomNavItems extends StatefulWidget {
 class _BottomNavItemsState extends State<BottomNavItems> {
   int index = 0;
   List<Widget> pages = [const HomePage(), const UploadPage(), const Library()];
+
+  @override
+  void initState() {
+    BlocProvider.of<AudiolistCubit>(context).getList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +56,10 @@ class _BottomNavItemsState extends State<BottomNavItems> {
       body: Stack(
         children: [
           pages[index],
-          const Positioned(bottom: 0, left: 0, right: 0, child: MiniMusicPlayer())
+          index == 0
+              ? const Positioned(
+                  bottom: 0, left: 0, right: 0, child: MiniMusicPlayer())
+              : const SizedBox.shrink()
         ],
       ),
     );

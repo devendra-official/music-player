@@ -18,4 +18,6 @@ class AppPallete {
   static const Color buttonColor = Colors.blue;
 
   static const Color inactiveSeekColor = Colors.white38;
+
+  static const Color playerBgColor = Color(0xff121212);
 }

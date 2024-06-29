@@ -9,4 +9,12 @@ class MusicPlay extends MusicEvent {
   MusicPlay({required this.music});
 }
 
+class MusicStateEvent extends MusicEvent {
+  final PlayerState playerSubscription;
+
+  MusicStateEvent({required this.playerSubscription});
+}
+
+class MusicChange extends MusicEvent {}
+
 class MusicPausePlay extends MusicEvent {}
