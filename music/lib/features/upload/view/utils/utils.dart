@@ -1,18 +1,6 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
-
-String colorToString(Color color) {
-  return '#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
-}
-
-Color stringToColor(String colorString) {
-  final buffer = StringBuffer();
-  if (colorString.length == 6 || colorString.length == 7) buffer.write('ff');
-  buffer.write(colorString.replaceFirst('#', ''));
-  return Color(int.parse(buffer.toString(), radix: 16));
-}
 
 Future<File?> pickImage() async {
   FilePickerResult? file =

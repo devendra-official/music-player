@@ -5,8 +5,16 @@ sealed class MusicEvent {}
 
 class MusicPlay extends MusicEvent {
   final Music music;
+  final int index;
+  final List<Music> musicList;
 
-  MusicPlay({required this.music});
+  MusicPlay(
+      {required this.music, required this.index, required this.musicList});
+}
+
+class MusicUpdate extends MusicEvent {
+  final Music music;
+  MusicUpdate({required this.music});
 }
 
 class MusicStateEvent extends MusicEvent {
@@ -15,6 +23,6 @@ class MusicStateEvent extends MusicEvent {
   MusicStateEvent({required this.playerSubscription});
 }
 
-class MusicChange extends MusicEvent {}
-
 class MusicPausePlay extends MusicEvent {}
+
+class MusicDispose extends MusicEvent {}

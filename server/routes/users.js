@@ -9,7 +9,7 @@ require('dotenv').config()
 
 router.post('/add-user', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, profile_url } = req.body;
 
         const generateId = selectId();
         let uids = [];
@@ -24,8 +24,8 @@ router.post('/add-user', async (req, res) => {
         }
         const hash = bcrypt.hashSync(password, 10);
         const result = await pool.query(
-            'INSERT INTO users (uid, name, email, password) VALUES ($1, $2, $3, $4)',
-            [guid, name, email, hash]
+            'INSERT INTO users (uid, name, email, password,profile_url) VALUES ($1, $2, $3, $4,$5)',
+            [guid, name, email, hash, profile_url]
         );
 
         if (result.rowCount === 1) {
@@ -33,14 +33,14 @@ router.post('/add-user', async (req, res) => {
         }
         return res.status(400).json({ "msg": "failed to create new user" })
     } catch (e) {
-        return res.status(500).json({ "msg": e.toString() });
+        return res.status(500).json({ "msg": "failed to create user" });
     }
 });
 
 router.post("/signin", async (req, res) => {
     try {
         const { email, password } = req.body;
-        const result = await pool.query('SELECT uid,name,email,password,dt_created FROM users WHERE email=$1 LIMIT 1', [email])
+        const result = await pool.query('SELECT * FROM users WHERE email=$1 LIMIT 1', [email])
 
         if (result.rowCount == 0) {
             return res.status(400).json({ "msg": "email not found" });
@@ -55,6 +55,7 @@ router.post("/signin", async (req, res) => {
                     "user": {
                         "name": result.rows[0].name,
                         "email": result.rows[0].email,
+                        "profile_url": result.rows[0].profile_url,
                         "created_at": result.rows[0].dt_created
                     }
                 }
@@ -65,7 +66,7 @@ router.post("/signin", async (req, res) => {
         }
         return res.status(401).json({ "msg": "something went wrong,please wait untill problem resolved" })
     } catch (e) {
-        return res.status(500).json({ "msg": e.toString() });
+        return res.status(500).json({ "msg": "failed login user" });
     }
 })
 

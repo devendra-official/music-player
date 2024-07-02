@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloudinary/cloudinary.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/features/upload/repository/upload_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,10 +23,10 @@ class UploadCubit extends Cubit<UploadState> {
   void uploadMusic({
     required File music,
     required File image,
-    required String color,
-    required String movie,
+    required String album,
     required String artist,
     required String musicName,
+    required String language,
   }) async {
     emit(UploadLoading());
     CloudinaryResponse imageUrl = await cloudinary.upload(
@@ -43,14 +44,14 @@ class UploadCubit extends Cubit<UploadState> {
       final response = await uploadRepository.uploadMusic(
         imageurl: imageUrl.secureUrl!,
         audiourl: audioUrl.secureUrl!,
-        movie: movie,
+        album: album,
         artist: artist,
         musicName: musicName,
-        color: color,
+        language: language,
       );
       response.fold(
         (message) => emit(UploadSuccess(message)),
-        (failuer) => emit(UploadFailure(failuer.failure)),
+        (failure) => emit(UploadFailure(failure.failure)),
       );
     } else {
       emit(UploadFailure("failed upload files to the server"));

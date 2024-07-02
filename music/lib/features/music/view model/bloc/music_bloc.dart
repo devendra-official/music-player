@@ -1,35 +1,55 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:music/features/music/viewmodel/music_model.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+import 'package:music/features/music/view%20model/music_model.dart';
 
 part 'music_event.dart';
 part 'music_state.dart';
 
 class MusicBloc extends Bloc<MusicEvent, MusicState> {
   static AudioPlayer? player;
-  StreamSubscription<PlayerState>? playerStateSubscription;
 
   MusicBloc() : super(const MusicInitial(music: null)) {
     on<MusicPlay>(onMusicPlay);
+    on<MusicUpdate>(onMusicUpdate);
     on<MusicStateEvent>(onMusicStateEvent);
     on<MusicPausePlay>(onMusicPausePlay);
+    on<MusicDispose>(onMusicDispose);
   }
 
   void onMusicPlay(MusicPlay event, Emitter<MusicState> emit) async {
     try {
       emit(MusicLoading(music: event.music));
+      List<Music> list = event.musicList;
       await player?.stop();
       await player?.dispose();
-      await playerStateSubscription?.cancel();
 
       player = AudioPlayer();
-      await player?.setUrl("https://download.samplelib.com/mp3/sample-12s.mp3");
+      ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
+        useLazyPreparation: true,
+        shuffleOrder: DefaultShuffleOrder(),
+        children: List.generate(list.length, (index) {
+          return AudioSource.uri(
+            Uri.parse(list[index].songUrl),
+            tag: MediaItem(
+              id: list[index].id.toString(),
+              title: list[index].songName,
+              album: list[index].album,
+              artUri: Uri.parse(list[index].imageUrl),
+            ),
+          );
+        }),
+      );
+      player?.setAudioSource(playlist, initialIndex: event.index);
       player?.play();
       emit(MusicPlaying(music: state.music));
-      playerStateSubscription = player?.playerStateStream.listen((musicState) {
+      player?.currentIndexStream.listen((index) {
+        if (index != null) {
+          add(MusicUpdate(music: list[index]));
+        }
+      });
+      player?.playerStateStream.listen((musicState) {
         add(MusicStateEvent(playerSubscription: musicState));
       });
     } catch (e) {
@@ -40,13 +60,23 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
     }
   }
 
+  void onMusicUpdate(MusicUpdate event, Emitter<MusicState> emit) {
+    if (state is MusicLoading) {
+      emit(MusicLoading(music: event.music));
+    } else if (state is MusicPlaying) {
+      emit(MusicPlaying(music: event.music));
+    } else {
+      emit(MusicPaused(music: event.music));
+    }
+  }
+
   void onMusicStateEvent(MusicStateEvent event, Emitter<MusicState> emit) {
     try {
       switch (event.playerSubscription.processingState) {
         case (ProcessingState.loading):
           emit(MusicLoading(music: state.music));
           break;
-        case (ProcessingState.idle):
+        case (ProcessingState.buffering):
           emit(MusicLoading(music: state.music));
           break;
         case (ProcessingState.ready):
@@ -61,7 +91,7 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
           break;
       }
     } catch (e) {
-      emit(MusicFailed(message: 'something went wrong', music: state.music));
+      emit(MusicFailed(music: state.music));
     }
   }
 
@@ -77,9 +107,13 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
         }
       }
     } catch (e) {
-      emit(MusicFailed(message: e.toString()));
+      emit(const MusicFailed());
     }
   }
 
-  static AudioPlayer? get musicPlayer => player;
+  void onMusicDispose(MusicDispose event, Emitter<MusicState> emit) async {
+    await player?.stop();
+    await player?.dispose();
+    emit(const MusicPaused(music: null));
+  }
 }

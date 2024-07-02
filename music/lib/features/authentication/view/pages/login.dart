@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/authentication/view/pages/signup.dart';
 import 'package:music/features/authentication/view/widgets/widget.dart';
-import 'package:music/features/authentication/viewmodel/cubit/auth_cubit.dart';
-import 'package:music/features/music/view/pages/bottom.dart';
+import 'package:music/features/authentication/view%20model/cubit/auth_cubit.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -37,18 +36,14 @@ class _LoginState extends State<Login> {
               if (state is AuthSignInFailure) {
                 showMessage(context, state.message);
               }
-              if (state is AuthSignInSucsess) {
-                showMessage(context, "Login Success");
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) {
-                  return const BottomNavItems();
-                }), (_) => false);
-              }
             },
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                CustomForm(controller: email, label: "Email",type: TextInputType.emailAddress),
+                CustomForm(
+                    controller: email,
+                    label: "Email",
+                    type: TextInputType.emailAddress),
                 const SizedBox(height: 20),
                 CustomForm(
                     controller: password, label: "Password", password: true),

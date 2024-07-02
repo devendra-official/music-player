@@ -26,5 +26,5 @@ final class MusicLoading extends MusicState {
 final class MusicFailed extends MusicState {
   final String message;
 
-  const MusicFailed({required this.message, super.music});
+  const MusicFailed({this.message ='something went wrong', super.music});
 }

@@ -2,27 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/core/theme/app_pallete.dart';
+import 'package:music/features/music/utils/utils.dart';
 import 'package:music/features/music/view/pages/player.dart';
-import 'package:music/features/music/viewmodel/bloc/music_bloc.dart';
-import 'package:music/features/music/viewmodel/music_model.dart';
-import 'package:music/features/upload/view/utils/utils.dart';
-
-class Library extends StatelessWidget {
-  const Library({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          "Library",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
-}
+import 'package:music/features/music/view%20model/bloc/music_bloc.dart';
+import 'package:music/features/music/view%20model/music_model.dart';
 
 class MiniMusicPlayer extends StatelessWidget {
   const MiniMusicPlayer({super.key});
@@ -43,7 +26,7 @@ class MiniMusicPlayer extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               height: 68,
               width: MediaQuery.of(context).size.width,
-              color: stringToColor(music.color),
+              color: AppPallete.darkGrey,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -55,10 +38,16 @@ class MiniMusicPlayer extends StatelessWidget {
                           width: 54,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(4),
-                            image: DecorationImage(
-                              image: NetworkImage(music.imageUrl),
-                              fit: BoxFit.cover,
-                            ),
+                          ),
+                          child: Image.network(
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                'assets/images/default.jpg',
+                                fit: BoxFit.cover,
+                              );
+                            },
+                            music.imageUrl,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
@@ -83,6 +72,8 @@ class MiniMusicPlayer extends StatelessWidget {
                             width: MediaQuery.of(context).size.width / 2,
                             child: Text(
                               music.artist,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -95,10 +86,6 @@ class MiniMusicPlayer extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(CupertinoIcons.heart),
-                      ),
                       IconButton(
                         onPressed: () {
                           context.read<MusicBloc>().add(MusicPausePlay());
@@ -125,6 +112,52 @@ class MiniMusicPlayer extends StatelessWidget {
           );
         }
         return const SizedBox.shrink();
+      },
+    );
+  }
+}
+
+class Explore extends StatelessWidget {
+  const Explore({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: explore.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        mainAxisExtent: 84,
+      ),
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {},
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              color: AppPallete.containerBgColor,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(explore[index]["icon"]),
+                Text(
+                  explore[index]["name"],
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppPallete.white,
+                      ),
+                )
+              ],
+            ),
+          ),
+        );
       },
     );
   }

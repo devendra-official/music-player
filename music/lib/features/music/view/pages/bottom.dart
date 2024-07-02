@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:music/core/theme/app_pallete.dart';
+import 'package:music/core/utils/utils.dart';
+import 'package:music/features/authentication/view%20model/user_model.dart';
+import 'package:music/features/library/view/personal.dart';
 import 'package:music/features/music/view/pages/home.dart';
 import 'package:music/features/music/view/widgets/widgets.dart';
-import 'package:music/features/music/viewmodel/cubit/audiolist_cubit.dart';
+import 'package:music/features/music/view%20model/cubit/audiolist_cubit.dart';
 import 'package:music/features/upload/view/pages/upload.dart';
 
 class BottomNavItems extends StatefulWidget {
@@ -14,7 +18,11 @@ class BottomNavItems extends StatefulWidget {
 
 class _BottomNavItemsState extends State<BottomNavItems> {
   int index = 0;
-  List<Widget> pages = [const HomePage(), const UploadPage(), const Library()];
+  List<Widget> pages = [
+    const HomePage(),
+    const UploadPage(),
+    const PersonalPage()
+  ];
 
   @override
   void initState() {
@@ -31,24 +39,58 @@ class _BottomNavItemsState extends State<BottomNavItems> {
             index = value;
           });
         },
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
+        selectedFontSize: 12,
+        backgroundColor: AppPallete.darkGrey,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        currentIndex: index,
+        selectedItemColor: AppPallete.white,
+        unselectedItemColor: AppPallete.white,
+        type: BottomNavigationBarType.fixed,
         items: [
-          BottomNavigationBarItem(
-            label: "home",
-            tooltip: "home",
-            icon: Icon(index == 0 ? Icons.home : Icons.home_outlined),
+          const BottomNavigationBarItem(
+            label: "Home",
+            activeIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+          ),
+          const BottomNavigationBarItem(
+            label: "Upload",
+            activeIcon: Icon(Icons.add_box),
+            icon: Icon(Icons.add_box_outlined),
           ),
           BottomNavigationBarItem(
-            label: "upload",
-            tooltip: "upload",
-            icon: Icon(index == 1 ? Icons.add_box : Icons.add_box_outlined),
-          ),
-          BottomNavigationBarItem(
-            label: "library",
-            tooltip: "library",
-            icon: Icon(
-              index == 2 ? Icons.library_music : Icons.library_music_outlined,
+            label: "You",
+            icon: BlocBuilder<UserCubit, UserModel?>(
+              builder: (context, state) {
+                if (state != null) {
+                  return Container(
+                    padding: const EdgeInsets.all(1.2),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: index == 2
+                            ? AppPallete.white
+                            : AppPallete.transparentColor,
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      radius: 14,
+                      foregroundImage: NetworkImage(state.user.profileUrl),
+                      child: Text(
+                        state.user.name[0].toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return Icon(
+                  index == 2
+                      ? Icons.account_circle_rounded
+                      : Icons.account_circle_outlined,
+                );
+              },
             ),
           ),
         ],
@@ -58,7 +100,11 @@ class _BottomNavItemsState extends State<BottomNavItems> {
           pages[index],
           index == 0
               ? const Positioned(
-                  bottom: 0, left: 0, right: 0, child: MiniMusicPlayer())
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: MiniMusicPlayer(),
+                )
               : const SizedBox.shrink()
         ],
       ),

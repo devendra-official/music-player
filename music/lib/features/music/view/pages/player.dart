@@ -1,17 +1,19 @@
-import 'package:flutter/cupertino.dart';
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:music/core/theme/app_pallete.dart';
+import 'package:music/core/theme/theme.dart';
 import 'package:music/core/utils/utils.dart';
-import 'package:music/features/music/viewmodel/bloc/music_bloc.dart';
-import 'package:music/features/music/viewmodel/music_model.dart';
-import 'package:music/features/upload/view/utils/utils.dart';
+import 'package:music/features/music/view%20model/bloc/music_bloc.dart';
+import 'package:music/features/music/view%20model/music_model.dart';
 
 class Player extends StatelessWidget {
   const Player({super.key});
 
   @override
   Widget build(BuildContext context) {
+    AudioPlayer? playerState;
     return BlocConsumer<MusicBloc, MusicState>(
       listener: (context, state) {
         if (state is MusicFailed) {
@@ -20,29 +22,14 @@ class Player extends StatelessWidget {
       },
       builder: (context, state) {
         if (state.music != null) {
+          playerState = MusicBloc.player;
           Music music = state.music!;
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [AppPallete.playerBgColor, stringToColor(music.color)],
-              ),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          return GradientScaffold(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
             child: Scaffold(
               backgroundColor: AppPallete.transparentColor,
-              appBar: AppBar(
-                backgroundColor: AppPallete.transparentColor,
-                automaticallyImplyLeading: false,
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.keyboard_arrow_down, size: 38),
-                ),
-              ),
               body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Hero(
                     tag: 'image-url',
@@ -52,8 +39,18 @@ class Player extends StatelessWidget {
                       height: 360,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
+                          color: AppPallete.backgroundColor,
                           borderRadius: BorderRadius.circular(12)),
-                      child: Image.network(music.imageUrl, fit: BoxFit.cover),
+                      child: Image.network(
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/images/default.jpg',
+                            fit: BoxFit.cover,
+                          );
+                        },
+                        music.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -82,15 +79,25 @@ class Player extends StatelessWidget {
                   const SizedBox(height: 10),
                   Column(
                     children: [
-                      SliderTheme(
-                        data: SliderThemeData(
-                          activeTrackColor: stringToColor(music.color),
-                          thumbColor: stringToColor(music.color),
-                        ),
-                        child: Slider(value: 0.5, onChanged: (value) {})),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text("0.00"), Text("1:00")],
+                      StreamBuilder<Duration>(
+                        stream: playerState?.positionStream,
+                        builder: (context, snapshot) {
+                          return ProgressBar(
+                            progressBarColor: AppPallete.white,
+                            thumbColor: AppPallete.white,
+                            thumbGlowRadius: 1,
+                            barHeight: 4,
+                            thumbRadius: 5.8,
+                            baseBarColor: AppPallete.white30,
+                            progress: playerState == null
+                                ? Duration.zero
+                                : playerState!.position,
+                            total: playerState!.duration ?? Duration.zero,
+                            onSeek: (value) {
+                              playerState?.seek(value);
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -99,9 +106,11 @@ class Player extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          playerState?.seekToPrevious();
+                        },
                         icon: const Icon(Icons.skip_previous),
-                        iconSize: 54,
+                        iconSize: 74,
                       ),
                       IconButton(
                         onPressed: () {
@@ -115,17 +124,19 @@ class Player extends StatelessWidget {
                               );
                             }
                             if (state is MusicPlaying) {
-                              return const Icon(CupertinoIcons.pause_fill);
+                              return const Icon(Icons.pause_circle);
                             }
-                            return const Icon(CupertinoIcons.play_fill);
+                            return const Icon(Icons.play_circle);
                           },
                         ),
-                        iconSize: 54,
+                        iconSize: 74,
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          playerState?.seekToNext();
+                        },
                         icon: const Icon(Icons.skip_next),
-                        iconSize: 54,
+                        iconSize: 74,
                       ),
                     ],
                   )

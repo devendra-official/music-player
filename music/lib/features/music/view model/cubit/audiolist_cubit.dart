@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:music/core/error/failure.dart';
 import 'package:music/features/music/repository/getlistrepo.dart';
-import 'package:music/features/music/viewmodel/music_model.dart';
+import 'package:music/features/music/view%20model/music_model.dart';
 
 part 'audiolist_state.dart';
 

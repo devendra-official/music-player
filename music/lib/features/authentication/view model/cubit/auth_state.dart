@@ -13,9 +13,9 @@ final class AuthSignUpSucsess extends AuthState {
 }
 
 final class AuthSignInSucsess extends AuthState {
-  final String token;
+  final UserModel userModel;
 
-  AuthSignInSucsess({required this.token});
+  AuthSignInSucsess({required this.userModel});
 }
 
 final class AuthSignInFailure extends AuthState {

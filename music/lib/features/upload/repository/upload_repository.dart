@@ -4,6 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart';
 import 'package:music/core/error/failure.dart';
 import 'package:music/core/server/server_config.dart';
+import 'package:music/features/authentication/view%20model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadRepository {
@@ -14,25 +15,30 @@ class UploadRepository {
   Future<Either<String, Failure>> uploadMusic({
     required String imageurl,
     required String audiourl,
-    required String movie,
+    required String album,
     required String artist,
     required String musicName,
-    required String color,
+    required String language,
   }) async {
     try {
-      String? token = preferences.getString("token");
-      if (token == null) {
-        return Right(Failure("Authentication failed"));
+      String? userData = preferences.getString("userData");
+      if (userData == null) {
+        return Right(Failure(
+            failure: 'Authentication failed please login again', code: 401));
       }
+      UserModel userModel = UserModel.fromJson(jsonDecode(userData));
       Response response = await client.post(
-        headers: {'x-auth-token': token, 'Content-Type': "Application/json"},
+        headers: {
+          'x-auth-token': userModel.token,
+          'Content-Type': "Application/json"
+        },
         body: jsonEncode({
           "musicurl": audiourl,
           "name": musicName,
-          "movie": movie,
+          "album": album,
           "imageurl": imageurl,
           "artist": artist,
-          "color": color
+          "language": language
         }),
         Uri.parse("${ServerConfig.serverIP}/music/upload"),
       );
@@ -40,9 +46,10 @@ class UploadRepository {
       if (response.statusCode == 201) {
         return Left(uploadData["msg"]);
       }
-      return Right(Failure(uploadData["msg"]));
+      return Right(
+          Failure(failure: uploadData["msg"], code: response.statusCode));
     } catch (e) {
-      return Right(Failure(e.toString()));
+      return Right(Failure(failure: "failed to upload music"));
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart';
 import 'package:music/core/error/failure.dart';
 import 'package:music/core/server/server_config.dart';
+import 'package:music/features/authentication/view%20model/user_model.dart';
 
 class Authrepository {
   Authrepository(this.client);
@@ -25,13 +26,13 @@ class Authrepository {
       if (response.statusCode == 201) {
         return const Left("Sign-up successful");
       }
-      return Right(Failure(userData["msg"]));
+      return Right(Failure(failure: userData["msg"]));
     } catch (e) {
-      return Right(Failure(e.toString()));
+      return Right(Failure(failure: "signup failed,Try Again!"));
     }
   }
 
-  Future<Either<String, Failure>> signin({
+  Future<Either<UserModel, Failure>> signin({
     required String email,
     required String password,
   }) async {
@@ -43,11 +44,11 @@ class Authrepository {
       );
       final userData = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        return Left(userData["token"]);
+        return Left(UserModel.fromJson(userData));
       }
-      return Right(Failure(userData["msg"]));
+      return Right(Failure(failure: userData["msg"]));
     } catch (e) {
-      return Right(Failure(e.toString()));
+      return Right(Failure(failure: "login failed,Try Again!"));
     }
   }
 }
