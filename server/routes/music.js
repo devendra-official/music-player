@@ -22,7 +22,7 @@ router.post("/upload", verifyToken, async (req, res) => {
 
 router.get("/list-all", verifyToken, async (_, res) => {
     try {
-        const songs = await pool.query('SELECT * FROM musics ORDER BY dt_uploaded DESC LIMIT 10');
+        const songs = await pool.query('SELECT * FROM musics ORDER BY dt_uploaded DESC');
         return res.json(songs.rows);
     } catch (e) {
         return res.status(500).json({ "msg": "server failed" })

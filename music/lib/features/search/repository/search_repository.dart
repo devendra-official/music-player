@@ -17,11 +17,10 @@ class SearchRepository {
     try {
       String? userData = preferences.getString("userData");
       if (userData == null) {
-        return Right(Failure(
-            failure: 'Authentication failed please login again', code: 401));
+        return Right(Failure('Authentication failed please login again'));
       }
       UserModel userModel = UserModel.fromJson(jsonDecode(userData));
-      
+
       Response response = await client.post(
         headers: {
           "x-auth-token": userModel.token,
@@ -34,10 +33,9 @@ class SearchRepository {
       if (response.statusCode == 200) {
         return Left(MusicModel.fromJson(musicData));
       }
-      return Right(
-          Failure(failure: musicData["msg"], code: response.statusCode));
+      return Right(Failure(musicData["msg"]));
     } catch (e) {
-      return Right(Failure(failure: 'failed to search'));
+      return Right(Failure('failed to search'));
     }
   }
 }

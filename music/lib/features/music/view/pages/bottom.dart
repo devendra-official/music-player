@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/core/theme/app_pallete.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/authentication/view%20model/user_model.dart';
-import 'package:music/features/library/view/personal.dart';
+import 'package:music/features/profile/view/personal.dart';
 import 'package:music/features/music/view/pages/home.dart';
 import 'package:music/features/music/view/widgets/widgets.dart';
 import 'package:music/features/music/view%20model/cubit/audiolist_cubit.dart';

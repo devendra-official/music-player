@@ -48,6 +48,7 @@ dependencies:
   audio_video_progress_bar: ^2.0.3
   just_audio_background: ^0.0.1-beta.12
   flutter_svg: ^2.0.10+1
+  marquee_widget: ^1.2.0
 
 dev_dependencies:
   flutter_test:

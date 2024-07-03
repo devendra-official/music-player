@@ -17,11 +17,10 @@ class AudioListRepository {
     try {
       String? userData = preferences.getString("userData");
       if (userData == null) {
-        return Right(Failure(
-            failure: 'Authentication failed please login again', code: 401));
+        return Right(Failure('Authentication failed please login again'));
       }
       UserModel userModel = UserModel.fromJson(jsonDecode(userData));
-      
+
       Response response = await client.get(
         headers: {"x-auth-token": userModel.token},
         Uri.parse("${ServerConfig.serverIP}/music/list-all"),
@@ -32,7 +31,7 @@ class AudioListRepository {
         return Left(MusicModel.fromJson(musicData));
       }
 
-      return Right(Failure(failure: musicData["msg"]));
+      return Right(Failure(musicData["msg"]));
     } catch (e) {
       return Right(Failure());
     }

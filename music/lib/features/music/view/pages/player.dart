@@ -61,6 +61,8 @@ class Player extends StatelessWidget {
                       children: [
                         Text(
                           music.songName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
@@ -68,6 +70,8 @@ class Player extends StatelessWidget {
                         ),
                         Text(
                           music.artist,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium

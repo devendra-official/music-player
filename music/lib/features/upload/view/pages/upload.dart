@@ -23,7 +23,6 @@ class _UploadPageState extends State<UploadPage> {
   TextEditingController langController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Color? selectedColor;
   File? selectedFile;
   File? selectedImage;
   String title = "Select Music File";

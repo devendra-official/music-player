@@ -23,8 +23,7 @@ class UploadRepository {
     try {
       String? userData = preferences.getString("userData");
       if (userData == null) {
-        return Right(Failure(
-            failure: 'Authentication failed please login again', code: 401));
+        return Right(Failure('Authentication failed please login again'));
       }
       UserModel userModel = UserModel.fromJson(jsonDecode(userData));
       Response response = await client.post(
@@ -46,10 +45,9 @@ class UploadRepository {
       if (response.statusCode == 201) {
         return Left(uploadData["msg"]);
       }
-      return Right(
-          Failure(failure: uploadData["msg"], code: response.statusCode));
+      return Right(Failure(uploadData["msg"]));
     } catch (e) {
-      return Right(Failure(failure: "failed to upload music"));
+      return Right(Failure("failed to upload music"));
     }
   }
 }

@@ -26,9 +26,9 @@ class Authrepository {
       if (response.statusCode == 201) {
         return const Left("Sign-up successful");
       }
-      return Right(Failure(failure: userData["msg"]));
+      return Right(Failure(userData["msg"]));
     } catch (e) {
-      return Right(Failure(failure: "signup failed,Try Again!"));
+      return Right(Failure("signup failed,Try Again!"));
     }
   }
 
@@ -46,9 +46,9 @@ class Authrepository {
       if (response.statusCode == 200) {
         return Left(UserModel.fromJson(userData));
       }
-      return Right(Failure(failure: userData["msg"]));
+      return Right(Failure(userData["msg"]));
     } catch (e) {
-      return Right(Failure(failure: "login failed,Try Again!"));
+      return Right(Failure("login failed,Try Again!"));
     }
   }
 }
