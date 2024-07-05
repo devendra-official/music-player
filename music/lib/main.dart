@@ -47,7 +47,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    print("initstate");
     context.read<AuthCubit>().autologin(context);
     super.initState();
   }

@@ -92,7 +92,7 @@ class MiniMusicPlayer extends StatelessWidget {
                           builder: (context, state) {
                             if (state is MusicLoading) {
                               return const CircularProgressIndicator(
-                                color: AppPallete.whiteColor,
+                                color: AppPallete.white,
                               );
                             }
                             if (state is MusicPlaying) {

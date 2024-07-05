@@ -51,7 +51,7 @@ class _UploadPageState extends State<UploadPage> {
                     child: const CircularProgressIndicator.adaptive(
                       strokeWidth: 3,
                       backgroundColor: AppPallete.transparentColor,
-                      valueColor: AlwaysStoppedAnimation(AppPallete.whiteColor),
+                      valueColor: AlwaysStoppedAnimation(AppPallete.white),
                     ),
                   );
                 }
