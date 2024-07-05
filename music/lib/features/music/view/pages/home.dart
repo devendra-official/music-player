@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/core/theme/app_pallete.dart';
 import 'package:music/core/theme/theme.dart';
 import 'package:music/core/utils/utils.dart';
+import 'package:music/features/music/view/widgets/musics_lan.dart';
 import 'package:music/features/music/view/widgets/widgets.dart';
 import 'package:music/features/music/view%20model/bloc/music_bloc.dart';
 import 'package:music/features/music/view%20model/cubit/audiolist_cubit.dart';
@@ -42,7 +43,9 @@ class HomePage extends StatelessWidget {
             },
             builder: (context, state) {
               if (state is AudiolistLoading) {
-                return const LinearProgressIndicator();
+                return const LinearProgressIndicator(
+                  color: AppPallete.white,
+                );
               }
               if (state is AudiolistSuccess) {
                 List<Music>? list = state.musicModel.music;
@@ -131,94 +134,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                            children: List.generate(3, (index) {
-                          //TODO:
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 1.2,
-                                padding:
-                                    const EdgeInsets.only(left: 10, bottom: 15),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Kannada",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    MoreButton()
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(left: 10),
-                                width: MediaQuery.of(context).size.width /
-                                    1.2, //TODO:
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6)),
-                                child: Column(
-                                  children: List.generate(
-                                      list.length > 5 ? 5 : list.length,
-                                      (index) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: index == 0
-                                            ? AppPallete.darkGrey
-                                            : AppPallete.transparentColor,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: ListTile(
-                                        leading: Container(
-                                          height: 50,
-                                          width: 50,
-                                          clipBehavior: Clip.hardEdge,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          child: Image.network(
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Image.asset(
-                                                'assets/images/default.jpg',
-                                                fit: BoxFit.cover,
-                                              );
-                                            },
-                                            state.musicModel.music[index]
-                                                .imageUrl,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        title: Text(
-                                          state
-                                              .musicModel.music[index].songName,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        subtitle: Text(
-                                          state.musicModel.music[index].artist,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ),
-                            ],
-                          );
-                        })),
-                      ),
+                      MusicByLanguage(),
                       const SizedBox(height: 70)
                     ],
                   ),

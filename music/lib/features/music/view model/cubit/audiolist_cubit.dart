@@ -5,8 +5,6 @@ import 'package:music/core/error/failure.dart';
 import 'package:music/features/music/repository/getlistrepo.dart';
 import 'package:music/features/music/view%20model/music_model.dart';
 
-part 'audiolist_state.dart';
-
 class AudiolistCubit extends Cubit<AudiolistState> {
   AudiolistCubit(this.audioListRepository) : super(AudiolistInitial());
 
@@ -20,4 +18,23 @@ class AudiolistCubit extends Cubit<AudiolistState> {
       (failure) => emit(AudiolistFailure(message: failure.failure)),
     );
   }
+}
+
+@immutable
+sealed class AudiolistState {}
+
+final class AudiolistInitial extends AudiolistState {}
+
+final class AudiolistSuccess extends AudiolistState {
+  final MusicModel musicModel;
+
+  AudiolistSuccess({required this.musicModel});
+}
+
+final class AudiolistLoading extends AudiolistState {}
+
+final class AudiolistFailure extends AudiolistState {
+  final String message;
+
+  AudiolistFailure({required this.message});
 }

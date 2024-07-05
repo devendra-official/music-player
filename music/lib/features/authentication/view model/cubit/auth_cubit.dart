@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:music/core/error/failure.dart';
+import 'package:music/core/utils/utils.dart';
 import 'package:music/features/authentication/repository/authrepository.dart';
 import 'package:music/features/authentication/view%20model/user_model.dart';
 import 'package:music/features/music/view%20model/bloc/music_bloc.dart';
@@ -16,12 +17,18 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit({
     required this.authrepository,
     required this.preferences,
-    required this.streamController,
+    required this.authStreamController,
   }) : super(AuthInitial());
 
   final Authrepository authrepository;
   final SharedPreferences preferences;
-  final StreamController<bool> streamController;
+  final StreamController<bool> authStreamController;
+
+  Future<void> autologin(BuildContext context) async {
+    String? userData = preferences.getString('userData');
+    authStreamController.add(userData != null);
+    context.read<UserCubit>().initialize(userData);
+  }
 
   Future<void> signup({
     required String name,
@@ -55,7 +62,7 @@ class AuthCubit extends Cubit<AuthState> {
           "userData",
           jsonEncode(usermodel.toJson()),
         );
-        streamController.add(true);
+        authStreamController.add(true);
         emit(AuthSignInSucsess(userModel: usermodel));
       },
       (failure) => emit(AuthSignInFailure(message: failure.failure)),
@@ -65,6 +72,6 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout(BuildContext context) async {
     BlocProvider.of<MusicBloc>(context).add(MusicDispose());
     await preferences.remove('userData');
-    streamController.add(false);
+    authStreamController.add(false);
   }
 }

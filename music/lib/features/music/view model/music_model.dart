@@ -1,5 +1,5 @@
 class MusicModel {
-  late List<Music> music;
+  late final List<Music> music;
 
   MusicModel(this.music);
 
@@ -11,13 +11,13 @@ class MusicModel {
 }
 
 class Music {
-  late int id;
-  late String album;
-  late String songUrl;
-  late String songName;
-  late String imageUrl;
-  late String artist;
-  late String language;
+  late final int id;
+  late final String album;
+  late final String songUrl;
+  late final String songName;
+  late final String imageUrl;
+  late final String artist;
+  late final String language;
 
   Music({
     required this.id,

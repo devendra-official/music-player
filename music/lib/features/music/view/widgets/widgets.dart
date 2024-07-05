@@ -137,3 +137,68 @@ class MoreButton extends StatelessWidget {
     );
   }
 }
+
+class MusicTile extends StatelessWidget {
+  const MusicTile({
+    super.key,
+    required this.languages,
+    required this.musicData,
+    required this.lan,
+    required this.index,
+    this.color = AppPallete.transparentColor,
+  });
+
+  final List<String> languages;
+  final Map<String, MusicModel> musicData;
+  final int lan;
+  final int index;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        BlocProvider.of<MusicBloc>(context).add(MusicPlay(
+          music: musicData[languages[lan]]!.music[index],
+          index: index,
+          musicList: musicData[languages[lan]]!.music,
+        ));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ListTile(
+          leading: Container(
+            height: 50,
+            width: 50,
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+            child: Image.network(
+              musicData[languages[lan]]!.music[index].imageUrl,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(
+                  'assets/images/default.jpg',
+                  fit: BoxFit.cover,
+                );
+              },
+              fit: BoxFit.cover,
+            ),
+          ),
+          title: Text(
+            musicData[languages[lan]]!.music[index].songName,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+            musicData[languages[lan]]!.music[index].artist,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ),
+    );
+  }
+}

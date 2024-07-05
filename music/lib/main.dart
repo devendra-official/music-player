@@ -7,13 +7,13 @@ import 'package:music/core/theme/theme.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/authentication/view/pages/login.dart';
 import 'package:music/features/authentication/view%20model/cubit/auth_cubit.dart';
+import 'package:music/features/music/view%20model/cubit/music_lan.dart';
 import 'package:music/features/music/view/pages/bottom.dart';
 import 'package:music/features/music/view%20model/bloc/music_bloc.dart';
 import 'package:music/features/music/view%20model/cubit/audiolist_cubit.dart';
 import 'package:music/features/search/view%20model/cubit/search_cubit.dart';
 import 'package:music/features/upload/view%20model/cubit/upload_cubit.dart';
 import 'package:music/init_dependency.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,35 +28,40 @@ Future<void> main() async {
       BlocProvider(create: (context) => serviceLocator<AuthCubit>()),
       BlocProvider(create: (context) => serviceLocator<UploadCubit>()),
       BlocProvider(create: (context) => serviceLocator<AudiolistCubit>()),
-      BlocProvider(create: (context) => MusicBloc()),
+      BlocProvider(create: (context) => serviceLocator<MusicBloc>()),
       BlocProvider(create: (context) => serviceLocator<SearchCubit>()),
-      BlocProvider(create: (context) => serviceLocator<UserCubit>())
+      BlocProvider(create: (context) => serviceLocator<UserCubit>()),
+      BlocProvider(create: (context) => serviceLocator<MusicByLanguageCubit>())
     ],
     child: const MyApp(),
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    SharedPreferences preferences = serviceLocator<SharedPreferences>();
-    String? userData = preferences.getString('userData');
-    serviceLocator<StreamController<bool>>()
-        .add(userData == null ? false : true);
-    BlocProvider.of<UserCubit>(context).initialize(userData);
+  State<MyApp> createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    print("initstate");
+    context.read<AuthCubit>().autologin(context);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Music Application',
       theme: theme,
       home: StreamBuilder<bool>(
-        stream: serviceLocator<StreamController<bool>>().stream,
+        stream: serviceLocator<StreamController<bool>>(instanceName: 'authStream').stream,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data ?? false) {
-              return const BottomNavItems();
-            }
+          if (snapshot.hasData && snapshot.data == true) {
+            return const BottomNavItems();
           }
           return const Login();
         },

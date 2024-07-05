@@ -22,31 +22,30 @@ router.post("/upload", verifyToken, async (req, res) => {
 
 router.get("/list-all", verifyToken, async (_, res) => {
     try {
-        const songs = await pool.query('SELECT * FROM musics ORDER BY dt_uploaded DESC');
+        const songs = await pool.query('SELECT * FROM musics ORDER BY id DESC');
         return res.json(songs.rows);
     } catch (e) {
         return res.status(500).json({ "msg": "server failed" })
     }
 })
 
-router.get("/list-language", verifyToken, async (_, res) => {
+router.get("/language", verifyToken, async (_, res) => {
     try {
-        const songs = await pool.query('SELECT DISTINCT language FROM musics');
-        return res.json(songs.rows);
-    } catch (e) {
-        return res.status(500).json({ "msg": "server failed" })
-    }
-})
+        let languageResult = await pool.query('SELECT DISTINCT language FROM musics');
+        let languages = languageResult.rows.map((language) => language.language);
 
-router.get("/language", verifyToken, async (req, res) => {
-    try {
-        const { language } = req.body;
-        const songs = await pool.query('SELECT * FROM musics WHERE language=$1', [language]);
-        return res.json(songs.rows);
+        let songsByLanguage = {}
+        songsByLanguage["languages"] = languages;
+        for (let language of languages) {
+            let songs = await pool.query('SELECT * FROM musics WHERE language=$1 ORDER BY id DESC', [language]);
+            songsByLanguage[language] = songs.rows;
+        }
+        return res.json(songsByLanguage);
     } catch (e) {
-        return res.status(500).json({ "msg": "server failed" })
+        return res.status(500).json({ "msg": 'Server failed' });
     }
-})
+});
+
 
 router.post("/search", verifyToken, async (req, res) => {
     try {

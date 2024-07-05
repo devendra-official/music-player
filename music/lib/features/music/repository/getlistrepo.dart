@@ -36,4 +36,28 @@ class AudioListRepository {
       return Right(Failure());
     }
   }
+
+  Future<Either<Map<String, dynamic>, Failure>> getByLanguage() async {
+    try {
+      String? userData = preferences.getString("userData");
+      if (userData == null) {
+        return Right(Failure('Authentication failed please login again'));
+      }
+      UserModel userModel = UserModel.fromJson(jsonDecode(userData));
+
+      Response response = await client.get(
+        headers: {"x-auth-token": userModel.token},
+        Uri.parse("${ServerConfig.serverIP}/music/language"),
+      );
+
+      final musicData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return Left(musicData);
+      }
+
+      return Right(Failure(musicData["msg"]));
+    } catch (e) {
+      return Right(Failure());
+    }
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
@@ -9,8 +11,9 @@ part 'music_state.dart';
 
 class MusicBloc extends Bloc<MusicEvent, MusicState> {
   static AudioPlayer? player;
+  final StreamController<int> currentMusic;
 
-  MusicBloc() : super(const MusicInitial(music: null)) {
+  MusicBloc(this.currentMusic) : super(const MusicInitial(music: null)) {
     on<MusicPlay>(onMusicPlay);
     on<MusicUpdate>(onMusicUpdate);
     on<MusicStateEvent>(onMusicStateEvent);
@@ -21,6 +24,7 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
   void onMusicPlay(MusicPlay event, Emitter<MusicState> emit) async {
     try {
       emit(MusicLoading(music: event.music));
+      currentMusic.add(event.music.id);
       List<Music> list = event.musicList;
       await player?.stop();
       await player?.dispose();
@@ -61,6 +65,7 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
   }
 
   void onMusicUpdate(MusicUpdate event, Emitter<MusicState> emit) {
+    currentMusic.add(event.music.id);
     if (state is MusicLoading) {
       emit(MusicLoading(music: event.music));
     } else if (state is MusicPlaying) {
