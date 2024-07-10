@@ -7,6 +7,7 @@ import 'package:music/core/theme/theme.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/music/view%20model/bloc/music_bloc.dart';
 import 'package:music/features/music/view%20model/music_model.dart';
+import 'package:music/features/music/view/widgets/widgets.dart';
 
 class Player extends StatelessWidget {
   const Player({super.key});
@@ -41,16 +42,7 @@ class Player extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: AppPallete.backgroundColor,
                           borderRadius: BorderRadius.circular(12)),
-                      child: Image.network(
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'assets/images/default.jpg',
-                            fit: BoxFit.cover,
-                          );
-                        },
-                        music.imageUrl,
-                        fit: BoxFit.cover,
-                      ),
+                      child: CustomNetworkImage(url: music.imageUrl),
                     ),
                   ),
                   const SizedBox(height: 20),

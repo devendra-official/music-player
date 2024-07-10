@@ -20,7 +20,7 @@ class CustomForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      onTap: () {},
+      enableInteractiveSelection: true,
       controller: controller,
       obscureText: password,
       keyboardType: type,

@@ -42,21 +42,14 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-.dart_tool
-.idea
 /android
-/build
 /ios
+/macos
 /lib/core/secrets
 /linux
-/macos
 /test
 /web
 /windows
-.flutter-plugins
-.flutter-plugins-dependencies
 .metadata
 analysis_options.yaml
-flutter_01.log
-music.iml
 pubspec.lock

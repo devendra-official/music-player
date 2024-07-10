@@ -4,6 +4,7 @@ import 'package:cloudinary/cloudinary.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:music/core/secrets/api_key.dart';
+import 'package:music/core/server/server.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/authentication/repository/authrepository.dart';
 import 'package:music/features/authentication/view%20model/cubit/auth_cubit.dart';
@@ -24,16 +25,11 @@ Future<void> initdependencyfun() async {
   serviceLocator.registerFactory(() => preferences);
   serviceLocator.registerFactory(() => http.Client());
   serviceLocator
-      .registerFactory<Authrepository>(() => Authrepository(serviceLocator()));
+      .registerFactory<Authrepository>(() => Authrepository(serviceLocator(),serviceLocator()));
 
   serviceLocator.registerLazySingleton<StreamController<bool>>(
       () => StreamController<bool>(),
       instanceName: 'authStream');
-
-  serviceLocator.registerLazySingleton<StreamController<int>>(
-    () => StreamController<int>.broadcast(),
-    instanceName: 'currentSong',
-  );
 
   serviceLocator.registerLazySingleton(
     () => Cloudinary.signedConfig(
@@ -81,6 +77,7 @@ Future<void> initdependencyfun() async {
   serviceLocator.registerLazySingleton(() => UserCubit(serviceLocator()));
   serviceLocator
       .registerLazySingleton(() => MusicByLanguageCubit(serviceLocator()));
-  serviceLocator.registerLazySingleton(() => MusicBloc(
-      serviceLocator<StreamController<int>>(instanceName: 'currentSong')));
+  serviceLocator.registerLazySingleton(() => MusicBloc());
+
+  serviceLocator.registerLazySingleton(() => ServerCubit(serviceLocator()));
 }

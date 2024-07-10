@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart';
 import 'package:music/core/error/failure.dart';
-import 'package:music/core/server/server_config.dart';
+import 'package:music/core/server/server.dart';
 import 'package:music/features/authentication/view%20model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +21,8 @@ class UploadRepository {
     required String language,
   }) async {
     try {
+      String server =
+          preferences.getString("server") ?? ServerCubit.serverIP;
       String? userData = preferences.getString("userData");
       if (userData == null) {
         return Right(Failure('Authentication failed please login again'));
@@ -39,7 +41,7 @@ class UploadRepository {
           "artist": artist,
           "language": language
         }),
-        Uri.parse("${ServerConfig.serverIP}/music/upload"),
+        Uri.parse("$server/music/upload"),
       );
       final uploadData = jsonDecode(response.body);
       if (response.statusCode == 201) {

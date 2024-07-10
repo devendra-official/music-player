@@ -67,7 +67,7 @@ class HomePage extends StatelessWidget {
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             MoreButton(
-                              onTap: () {},
+                              musicList: list,
                             )
                           ],
                         ),
@@ -100,16 +100,8 @@ class HomePage extends StatelessWidget {
                                       color: AppPallete.containerBgColor,
                                       borderRadius: BorderRadius.circular(14),
                                     ),
-                                    child: Image.network(
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Image.asset(
-                                          'assets/images/default.jpg',
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
-                                      state.musicModel.music[index].imageUrl,
-                                      fit: BoxFit.cover,
+                                    child: CustomNetworkImage(
+                                      url: list[index].imageUrl,
                                     ),
                                   ),
                                   const SizedBox(height: 5),
@@ -134,7 +126,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      MusicByLanguage(),
+                      const MusicByLanguage(),
                       const SizedBox(height: 70)
                     ],
                   ),

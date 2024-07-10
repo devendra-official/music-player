@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/core/theme/app_pallete.dart';
+import 'package:music/features/music/view/pages/music_list_page.dart';
 import 'package:music/features/music/view/pages/player.dart';
 import 'package:music/features/music/view%20model/bloc/music_bloc.dart';
 import 'package:music/features/music/view%20model/music_model.dart';
@@ -21,90 +23,48 @@ class MiniMusicPlayer extends StatelessWidget {
                 return const Player();
               }));
             },
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              height: 68,
-              width: MediaQuery.of(context).size.width,
-              color: AppPallete.darkGrey,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Hero(
-                        tag: 'image-url',
-                        child: Container(
-                          width: 54,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Image.network(
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                'assets/images/default.jpg',
-                                fit: BoxFit.cover,
-                              );
-                            },
-                            music.imageUrl,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Text(
-                              music.songName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Text(
-                              music.artist,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+            child: ListTile(
+              tileColor: AppPallete.darkGrey,
+              leading: Hero(
+                tag: 'image-url',
+                child: Container(
+                  width: 54,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          context.read<MusicBloc>().add(MusicPausePlay());
-                        },
-                        icon: BlocBuilder<MusicBloc, MusicState>(
-                          builder: (context, state) {
-                            if (state is MusicLoading) {
-                              return const CircularProgressIndicator(
-                                color: AppPallete.white,
-                              );
-                            }
-                            if (state is MusicPlaying) {
-                              return const Icon(CupertinoIcons.pause_fill);
-                            }
-                            return const Icon(CupertinoIcons.play_fill);
-                          },
-                        ),
-                      )
-                    ],
-                  )
-                ],
+                  child: CustomNetworkImage(url: music.imageUrl),
+                ),
+              ),
+              title: Text(
+                music.songName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              subtitle: Text(
+                music.artist,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: IconButton(
+                onPressed: () {
+                  context.read<MusicBloc>().add(MusicPausePlay());
+                },
+                icon: BlocBuilder<MusicBloc, MusicState>(
+                  builder: (context, state) {
+                    if (state is MusicLoading) {
+                      return const CircularProgressIndicator(
+                        color: AppPallete.white,
+                      );
+                    }
+                    if (state is MusicPlaying) {
+                      return const Icon(CupertinoIcons.pause_fill);
+                    }
+                    return const Icon(CupertinoIcons.play_fill);
+                  },
+                ),
               ),
             ),
           );
@@ -116,14 +76,18 @@ class MiniMusicPlayer extends StatelessWidget {
 }
 
 class MoreButton extends StatelessWidget {
-  const MoreButton({super.key, this.onTap});
+  const MoreButton({super.key, required this.musicList});
 
-  final void Function()? onTap;
+  final List<Music> musicList;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return MusicListPage(list: musicList);
+        }));
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
         decoration: BoxDecoration(
@@ -175,20 +139,13 @@ class MusicTile extends StatelessWidget {
             width: 50,
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-            child: Image.network(
-              musicData[languages[lan]]!.music[index].imageUrl,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  'assets/images/default.jpg',
-                  fit: BoxFit.cover,
-                );
-              },
-              fit: BoxFit.cover,
+            child: CustomNetworkImage(
+              url: musicData[languages[lan]]!.music[index].imageUrl,
             ),
           ),
           title: Text(
             musicData[languages[lan]]!.music[index].songName,
-            maxLines: 2,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -199,6 +156,24 @@ class MusicTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CustomNetworkImage extends StatelessWidget {
+  const CustomNetworkImage({super.key, required this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return CachedNetworkImage(
+      imageUrl: url,
+      errorWidget: (context, url, error) => Image.asset(
+        'assets/images/default.jpg',
+        fit: BoxFit.cover,
+      ),
+      fit: BoxFit.cover,
     );
   }
 }

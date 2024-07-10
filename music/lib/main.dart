@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:music/core/server/server.dart';
 import 'package:music/core/theme/theme.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/authentication/view/pages/login.dart';
@@ -17,6 +19,8 @@ import 'package:music/init_dependency.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
     androidNotificationChannelName: 'Music Player',
@@ -31,7 +35,8 @@ Future<void> main() async {
       BlocProvider(create: (context) => serviceLocator<MusicBloc>()),
       BlocProvider(create: (context) => serviceLocator<SearchCubit>()),
       BlocProvider(create: (context) => serviceLocator<UserCubit>()),
-      BlocProvider(create: (context) => serviceLocator<MusicByLanguageCubit>())
+      BlocProvider(create: (context) => serviceLocator<MusicByLanguageCubit>()),
+      BlocProvider(create: (context) => serviceLocator<ServerCubit>()),
     ],
     child: const MyApp(),
   ));
@@ -54,10 +59,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Music Application',
       theme: theme,
       home: StreamBuilder<bool>(
-        stream: serviceLocator<StreamController<bool>>(instanceName: 'authStream').stream,
+        stream:
+            serviceLocator<StreamController<bool>>(instanceName: 'authStream')
+                .stream,
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data == true) {
             return const BottomNavItems();

@@ -33,7 +33,7 @@ router.post('/add-user', async (req, res) => {
         }
         return res.status(400).json({ "msg": "failed to create new user" })
     } catch (e) {
-        return res.status(500).json({ "msg": "failed to create user" });
+        return res.status(500).json({ "msg": "Internal server error" });
     }
 });
 
@@ -66,7 +66,7 @@ router.post("/signin", async (req, res) => {
         }
         return res.status(401).json({ "msg": "something went wrong,please wait untill problem resolved" })
     } catch (e) {
-        return res.status(500).json({ "msg": "failed login user" });
+        return res.status(500).json({ "msg": "Internal server error" });
     }
 })
 

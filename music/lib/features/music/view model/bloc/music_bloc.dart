@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
@@ -11,9 +9,8 @@ part 'music_state.dart';
 
 class MusicBloc extends Bloc<MusicEvent, MusicState> {
   static AudioPlayer? player;
-  final StreamController<int> currentMusic;
 
-  MusicBloc(this.currentMusic) : super(const MusicInitial(music: null)) {
+  MusicBloc() : super(const MusicInitial(music: null)) {
     on<MusicPlay>(onMusicPlay);
     on<MusicUpdate>(onMusicUpdate);
     on<MusicStateEvent>(onMusicStateEvent);
@@ -23,8 +20,7 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
 
   void onMusicPlay(MusicPlay event, Emitter<MusicState> emit) async {
     try {
-      emit(MusicLoading(music: event.music));
-      currentMusic.add(event.music.id);
+      emit(MusicLoading(music: event.music, currentId: event.music.id));
       List<Music> list = event.musicList;
       await player?.stop();
       await player?.dispose();
@@ -47,7 +43,7 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
       );
       player?.setAudioSource(playlist, initialIndex: event.index);
       player?.play();
-      emit(MusicPlaying(music: state.music));
+      emit(MusicPlaying(music: state.music, currentId: state.currentId));
       player?.currentIndexStream.listen((index) {
         if (index != null) {
           add(MusicUpdate(music: list[index]));
@@ -58,20 +54,19 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
       });
     } catch (e) {
       emit(MusicFailed(
-        message: "Error occurred while playing music",
-        music: state.music,
-      ));
+          message: "Error occurred while playing music",
+          music: state.music,
+          currentId: state.currentId));
     }
   }
 
   void onMusicUpdate(MusicUpdate event, Emitter<MusicState> emit) {
-    currentMusic.add(event.music.id);
     if (state is MusicLoading) {
-      emit(MusicLoading(music: event.music));
+      emit(MusicLoading(music: event.music, currentId: event.music.id));
     } else if (state is MusicPlaying) {
-      emit(MusicPlaying(music: event.music));
+      emit(MusicPlaying(music: event.music, currentId: event.music.id));
     } else {
-      emit(MusicPaused(music: event.music));
+      emit(MusicPaused(music: event.music, currentId: event.music.id));
     }
   }
 
@@ -79,24 +74,24 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
     try {
       switch (event.playerSubscription.processingState) {
         case (ProcessingState.loading):
-          emit(MusicLoading(music: state.music));
+          emit(MusicLoading(music: state.music, currentId: state.currentId));
           break;
         case (ProcessingState.buffering):
-          emit(MusicLoading(music: state.music));
+          emit(MusicLoading(music: state.music, currentId: state.currentId));
           break;
         case (ProcessingState.ready):
           if (event.playerSubscription.playing) {
-            emit(MusicPlaying(music: state.music));
+            emit(MusicPlaying(music: state.music, currentId: state.currentId));
           } else {
-            emit(MusicPaused(music: state.music));
+            emit(MusicPaused(music: state.music, currentId: state.currentId));
           }
           break;
         default:
-          emit(MusicPaused(music: state.music));
+          emit(MusicPaused(music: state.music, currentId: state.currentId));
           break;
       }
     } catch (e) {
-      emit(MusicFailed(music: state.music));
+      emit(MusicFailed(music: state.music, currentId: state.currentId));
     }
   }
 
@@ -105,10 +100,10 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
       if (player != null) {
         if (player!.playing) {
           player?.pause();
-          emit(MusicPaused(music: state.music));
+          emit(MusicPaused(music: state.music, currentId: state.currentId));
         } else {
           player?.play();
-          emit(MusicPlaying(music: state.music));
+          emit(MusicPlaying(music: state.music, currentId: state.currentId));
         }
       }
     } catch (e) {
@@ -119,6 +114,6 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
   void onMusicDispose(MusicDispose event, Emitter<MusicState> emit) async {
     await player?.stop();
     await player?.dispose();
-    emit(const MusicPaused(music: null));
+    emit(const MusicPaused(music: null, currentId: null));
   }
 }

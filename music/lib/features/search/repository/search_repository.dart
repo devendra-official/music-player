@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart';
 import 'package:music/core/error/failure.dart';
-import 'package:music/core/server/server_config.dart';
+import 'package:music/core/server/server.dart';
 import 'package:music/features/authentication/view%20model/user_model.dart';
 import 'package:music/features/music/view%20model/music_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +15,8 @@ class SearchRepository {
   SearchRepository({required this.client, required this.preferences});
   Future<Either<MusicModel, Failure>> searchMusic(String value) async {
     try {
+      String server =
+          preferences.getString("server") ?? ServerCubit.serverIP;
       String? userData = preferences.getString("userData");
       if (userData == null) {
         return Right(Failure('Authentication failed please login again'));
@@ -27,7 +29,7 @@ class SearchRepository {
           'Content-Type': "Application/json"
         },
         body: jsonEncode({"value": value}),
-        Uri.parse('${ServerConfig.serverIP}/music/search'),
+        Uri.parse('$server/music/search'),
       );
       final musicData = jsonDecode(response.body);
       if (response.statusCode == 200) {

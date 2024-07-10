@@ -16,7 +16,7 @@ router.post("/upload", verifyToken, async (req, res) => {
         }
         return res.json({ "msg": "failed to upload your music" })
     } catch (e) {
-        return res.status(500).json({ "msg": "can't upload music" })
+        return res.status(500).json({ "msg": "Internal server error" })
     }
 })
 
@@ -25,7 +25,7 @@ router.get("/list-all", verifyToken, async (_, res) => {
         const songs = await pool.query('SELECT * FROM musics ORDER BY id DESC');
         return res.json(songs.rows);
     } catch (e) {
-        return res.status(500).json({ "msg": "server failed" })
+        return res.status(500).json({ "msg": "Internal server error" })
     }
 })
 
@@ -42,7 +42,7 @@ router.get("/language", verifyToken, async (_, res) => {
         }
         return res.json(songsByLanguage);
     } catch (e) {
-        return res.status(500).json({ "msg": 'Server failed' });
+        return res.status(500).json({ "msg": 'Internal server error' });
     }
 });
 
@@ -56,7 +56,7 @@ router.post("/search", verifyToken, async (req, res) => {
         const songs = await pool.query('SELECT * FROM musics WHERE LOWER(name) LIKE LOWER($1) OR LOWER(album) LIKE LOWER($1)', [`%${value}%`]);
         return res.json(songs.rows);
     } catch (e) {
-        return res.status(500).json({ "msg": e.toString() })
+        return res.status(500).json({ "msg": "Internal server error" })
     }
 })
 
