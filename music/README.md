@@ -14,3 +14,17 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+Cloudinary API `/music/lib/core/secrets/api_key.dart` 
+
+```dart
+class CloudinaryKey {
+  static const String _apiKey = "API KEY";
+  static const String _apiSecret = "API SECRET";
+  static const String _cloudName = "CLOUD NAME";
+
+  static String get apiKey => _apiKey;
+  static String get apiSecret => _apiSecret;
+  static String get cloudName => _cloudName;
+}
+```
