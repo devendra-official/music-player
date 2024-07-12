@@ -24,7 +24,7 @@ class MusicByLanguage extends StatelessWidget {
                   return Column(
                     children: [
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.86,
+                        width: MediaQuery.of(context).size.width * 0.84,
                         padding: const EdgeInsets.only(left: 10, bottom: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -43,7 +43,8 @@ class MusicByLanguage extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.86,
+                        width: MediaQuery.of(context).size.width * 0.84,
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6)),
                         child: Column(

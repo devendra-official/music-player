@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart';
 import 'package:music/core/error/failure.dart';
 import 'package:music/core/server/server.dart';
-import 'package:music/features/authentication/view%20model/user_model.dart';
+import 'package:music/core/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadRepository {

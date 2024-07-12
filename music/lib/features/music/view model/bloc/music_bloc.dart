@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
@@ -16,6 +17,7 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
     on<MusicStateEvent>(onMusicStateEvent);
     on<MusicPausePlay>(onMusicPausePlay);
     on<MusicDispose>(onMusicDispose);
+    on<MusicError>(onMusicError);
   }
 
   void onMusicPlay(MusicPlay event, Emitter<MusicState> emit) async {
@@ -27,7 +29,7 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
 
       player = AudioPlayer();
       ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
-        useLazyPreparation: true,
+        useLazyPreparation: false,
         shuffleOrder: DefaultShuffleOrder(),
         children: List.generate(list.length, (index) {
           return AudioSource.uri(
@@ -49,15 +51,36 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
           add(MusicUpdate(music: list[index]));
         }
       });
+      player?.playbackEventStream.listen((event) {},
+          onError: (Object e, StackTrace st) {
+        if (e is PlatformException) {
+          add(MusicError(error: e.message!));
+        } else {
+          add(MusicError(error: 'Error occurred while playing music'));
+        }
+      });
       player?.playerStateStream.listen((musicState) {
         add(MusicStateEvent(playerSubscription: musicState));
       });
+    } on PlayerException catch (e) {
+      emit(MusicFailed(message: e.message ?? 'Error while playing'));
+    } on PlayerInterruptedException catch (e) {
+      emit(MusicFailed(message: e.message ?? 'Connection aborted'));
     } catch (e) {
       emit(MusicFailed(
-          message: "Error occurred while playing music",
-          music: state.music,
-          currentId: state.currentId));
+        message: "Error occurred while playing music",
+        music: state.music,
+        currentId: state.currentId,
+      ));
     }
+  }
+
+  void onMusicError(MusicError event, Emitter<MusicState> emit) {
+    emit(MusicFailed(
+      message: event.error,
+      music: state.music,
+      currentId: state.currentId,
+    ));
   }
 
   void onMusicUpdate(MusicUpdate event, Emitter<MusicState> emit) {

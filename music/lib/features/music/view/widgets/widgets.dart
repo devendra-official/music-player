@@ -23,47 +23,51 @@ class MiniMusicPlayer extends StatelessWidget {
                 return const Player();
               }));
             },
-            child: ListTile(
-              tileColor: AppPallete.darkGrey,
-              leading: Hero(
-                tag: 'image-url',
-                child: Container(
-                  width: 54,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
+            child: Container(
+              color: AppPallete.darkGrey,
+              child: ListTile(
+                leading: Hero(
+                  tag: 'image-url',
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: CustomNetworkImage(url: music.imageUrl),
                   ),
-                  child: CustomNetworkImage(url: music.imageUrl),
                 ),
-              ),
-              title: Text(
-                music.songName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
+                title: Text(
+                  music.songName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              subtitle: Text(
-                music.artist,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: IconButton(
-                onPressed: () {
-                  context.read<MusicBloc>().add(MusicPausePlay());
-                },
-                icon: BlocBuilder<MusicBloc, MusicState>(
-                  builder: (context, state) {
-                    if (state is MusicLoading) {
-                      return const CircularProgressIndicator(
-                        color: AppPallete.white,
-                      );
-                    }
-                    if (state is MusicPlaying) {
-                      return const Icon(CupertinoIcons.pause_fill);
-                    }
-                    return const Icon(CupertinoIcons.play_fill);
+                subtitle: Text(
+                  music.artist,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: IconButton(
+                  onPressed: () {
+                    context.read<MusicBloc>().add(MusicPausePlay());
                   },
+                  icon: BlocBuilder<MusicBloc, MusicState>(
+                    builder: (context, state) {
+                      if (state is MusicLoading) {
+                        return const CircularProgressIndicator(
+                          color: AppPallete.white,
+                        );
+                      }
+                      if (state is MusicPlaying) {
+                        return const Icon(CupertinoIcons.pause_fill);
+                      }
+                      return const Icon(CupertinoIcons.play_fill);
+                    },
+                  ),
                 ),
               ),
             ),
@@ -134,6 +138,7 @@ class MusicTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           leading: Container(
             height: 50,
             width: 50,

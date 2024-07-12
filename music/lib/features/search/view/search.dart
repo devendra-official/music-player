@@ -4,6 +4,7 @@ import 'package:music/core/theme/app_pallete.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/music/view%20model/bloc/music_bloc.dart';
 import 'package:music/features/music/view/pages/player.dart';
+import 'package:music/features/music/view/widgets/widgets.dart';
 import 'package:music/features/search/view%20model/cubit/search_cubit.dart';
 
 class SearchPage extends StatefulWidget {
@@ -88,8 +89,16 @@ class _SearchPageState extends State<SearchPage> {
                         return const Player();
                       }));
                     },
-                    leading: Image.network(state.music[index].imageUrl,
-                        fit: BoxFit.cover, height: 64, width: 54),
+                    leading: Container(
+                      height: 50,
+                      width: 50,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child:
+                          CustomNetworkImage(url: state.music[index].imageUrl),
+                    ),
                     title: Text(state.music[index].songName),
                     subtitle: Text(state.music[index].album),
                   );

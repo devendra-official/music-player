@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/core/theme/app_pallete.dart';
 import 'package:music/core/theme/theme.dart';
 import 'package:music/core/utils/utils.dart';
-import 'package:music/features/authentication/view/widgets/widget.dart';
+import 'package:music/core/widgets/widget.dart';
 import 'package:music/features/upload/view/utils/utils.dart';
 import 'package:music/features/upload/view%20model/cubit/upload_cubit.dart';
 

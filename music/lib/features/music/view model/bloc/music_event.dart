@@ -26,3 +26,9 @@ class MusicStateEvent extends MusicEvent {
 class MusicPausePlay extends MusicEvent {}
 
 class MusicDispose extends MusicEvent {}
+
+class MusicError extends MusicEvent {
+  final String error;
+
+  MusicError({required this.error});
+}

@@ -8,7 +8,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:music/core/error/failure.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/authentication/repository/authrepository.dart';
-import 'package:music/features/authentication/view%20model/user_model.dart';
+import 'package:music/core/model/user_model.dart';
 import 'package:music/features/music/view%20model/bloc/music_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

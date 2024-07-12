@@ -1,8 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/core/theme/app_pallete.dart';
 import 'package:music/core/utils/utils.dart';
-import 'package:music/features/authentication/view%20model/user_model.dart';
+import 'package:music/core/model/user_model.dart';
 import 'package:music/features/music/view%20model/cubit/music_lan.dart';
 import 'package:music/features/profile/view/pages/personal.dart';
 import 'package:music/features/music/view/pages/home.dart';
@@ -77,7 +78,7 @@ class _BottomNavItemsState extends State<BottomNavItems> {
                     ),
                     child: CircleAvatar(
                       radius: 14,
-                      foregroundImage: NetworkImage(state.user.profileUrl),
+                      foregroundImage: CachedNetworkImageProvider(state.user.profileUrl),
                       child: Text(
                         state.user.name[0].toUpperCase(),
                         style: const TextStyle(

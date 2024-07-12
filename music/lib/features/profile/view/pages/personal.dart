@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/core/server/server.dart';
@@ -5,7 +6,7 @@ import 'package:music/core/theme/app_pallete.dart';
 import 'package:music/core/theme/theme.dart';
 import 'package:music/core/utils/utils.dart';
 import 'package:music/features/authentication/view%20model/cubit/auth_cubit.dart';
-import 'package:music/features/authentication/view%20model/user_model.dart';
+import 'package:music/core/model/user_model.dart';
 import 'package:music/features/music/view%20model/cubit/audiolist_cubit.dart';
 import 'package:music/features/music/view%20model/cubit/music_lan.dart';
 
@@ -46,10 +47,10 @@ class _PersonalPageState extends State<PersonalPage> {
                   if (state != null) {
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          state.user.profileUrl,
-                        ),
+                        backgroundImage:
+                            CachedNetworkImageProvider(state.user.profileUrl),
                         radius: 28,
+                        child: Text(state.user.name[0].toUpperCase()),
                       ),
                       title: Text(state.user.name,
                           style: const TextStyle(fontWeight: FontWeight.bold)),

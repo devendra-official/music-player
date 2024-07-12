@@ -66,9 +66,7 @@ class HomePage extends StatelessWidget {
                                   .titleLarge
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
-                            MoreButton(
-                              musicList: list,
-                            )
+                            MoreButton(musicList: list)
                           ],
                         ),
                       ),

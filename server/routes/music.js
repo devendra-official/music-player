@@ -31,7 +31,7 @@ router.get("/list-all", verifyToken, async (_, res) => {
 
 router.get("/language", verifyToken, async (_, res) => {
     try {
-        let languageResult = await pool.query('SELECT DISTINCT language FROM musics');
+        let languageResult = await pool.query('SELECT language, COUNT(language) AS total_songs FROM musics GROUP BY language ORDER BY total_songs DESC');
         let languages = languageResult.rows.map((language) => language.language);
 
         let songsByLanguage = {}

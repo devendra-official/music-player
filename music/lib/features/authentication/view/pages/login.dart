@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music/core/utils/utils.dart';
+import 'package:music/core/widgets/widget.dart';
 import 'package:music/features/authentication/view/pages/signup.dart';
 import 'package:music/features/authentication/view/widgets/widget.dart';
 import 'package:music/features/authentication/view%20model/cubit/auth_cubit.dart';
