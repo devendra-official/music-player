@@ -47,8 +47,7 @@ class _PersonalPageState extends State<PersonalPage> {
                   if (state != null) {
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundImage:
-                            CachedNetworkImageProvider(state.user.profileUrl),
+                        foregroundImage: CachedNetworkImageProvider(state.user.profileUrl),
                         radius: 28,
                         child: Text(state.user.name[0].toUpperCase()),
                       ),
@@ -100,7 +99,7 @@ class _PersonalPageState extends State<PersonalPage> {
               ),
               ListTile(
                 onTap: () {
-                  showMessage(context, 'feature will be added soon');
+                  showMessage(context, 'coming soon!');
                 },
                 leading: const Icon(Icons.manage_accounts),
                 title: const Text('Update Profile'),

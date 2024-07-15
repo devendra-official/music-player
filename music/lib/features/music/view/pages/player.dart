@@ -28,6 +28,17 @@ class Player extends StatelessWidget {
           return GradientScaffold(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
             child: Scaffold(
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      showMessage(context, "coming soon!");
+                    },
+                    icon: const Icon(Icons.more_vert),
+                  )
+                ],
+              ),
               backgroundColor: AppPallete.transparentColor,
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -64,10 +75,6 @@ class Player extends StatelessWidget {
                           music.artist,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(fontWeight: FontWeight.bold),
                         )
                       ],
                     ),

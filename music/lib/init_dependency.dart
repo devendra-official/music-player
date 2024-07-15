@@ -33,9 +33,9 @@ Future<void> initdependencyfun() async {
 
   serviceLocator.registerLazySingleton(
     () => Cloudinary.signedConfig(
-      apiKey: CloudinaryKey.apiKey,
-      apiSecret: CloudinaryKey.apiSecret,
-      cloudName: CloudinaryKey.cloudName,
+      apiKey: SecretKey.apiKey,
+      apiSecret: SecretKey.apiSecret,
+      cloudName: SecretKey.cloudName,
     ),
   );
 

@@ -38,6 +38,7 @@ class _SearchPageState extends State<SearchPage> {
                   borderRadius: BorderRadius.circular(28),
                 ),
                 child: TextField(
+                  autofocus: true,
                   controller: searchController,
                   decoration: const InputDecoration(
                     hintText: 'Search for song or album',

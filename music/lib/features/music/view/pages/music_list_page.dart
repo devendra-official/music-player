@@ -34,48 +34,66 @@ class MusicListPage extends StatelessWidget {
                         musicList: list,
                       ));
                     },
-                    child: ListTile(
-                      leading: Container(
-                        height: 50,
-                        width: 50,
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: CustomNetworkImage(url: list[index].imageUrl),
-                      ),
-                      title: Text(
-                        list[index].songName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        list[index].artist,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      trailing: state.currentId == list[index].id
-                          ? IconButton(
-                              onPressed: () {
-                                context.read<MusicBloc>().add(MusicPausePlay());
-                              },
-                              icon: BlocBuilder<MusicBloc, MusicState>(
-                                builder: (context, state) {
-                                  if (state is MusicLoading) {
-                                    return const CircularProgressIndicator(
-                                      color: AppPallete.white,
-                                    );
-                                  }
-                                  if (state is MusicPlaying) {
-                                    return const Icon(
-                                        CupertinoIcons.pause_fill);
-                                  }
-                                  return const Icon(CupertinoIcons.play_fill);
-                                },
+                    child: BlocBuilder<MusicBloc, MusicState>(
+                      builder: (context, state) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: state.currentId == list[index].id
+                                ? AppPallete.darkGrey
+                                : AppPallete.transparentColor,
+                          ),
+                          child: ListTile(
+                            leading: Container(
+                              height: 50,
+                              width: 50,
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                            )
-                          : null,
+                              child:
+                                  CustomNetworkImage(url: list[index].imageUrl),
+                            ),
+                            title: Text(
+                              list[index].songName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              list[index].artist,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            trailing: state.currentId == list[index].id
+                                ? IconButton(
+                                    onPressed: () {
+                                      context
+                                          .read<MusicBloc>()
+                                          .add(MusicPausePlay());
+                                    },
+                                    icon: BlocBuilder<MusicBloc, MusicState>(
+                                      builder: (context, state) {
+                                        if (state is MusicLoading) {
+                                          return const CircularProgressIndicator(
+                                            color: AppPallete.white,
+                                          );
+                                        }
+                                        if (state is MusicPlaying) {
+                                          return const Icon(
+                                              CupertinoIcons.pause_fill);
+                                        }
+                                        return const Icon(
+                                            CupertinoIcons.play_fill);
+                                      },
+                                    ),
+                                  )
+                                : null,
+                          ),
+                        );
+                      },
                     ),
                   );
                 },

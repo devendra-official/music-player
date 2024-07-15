@@ -11,7 +11,13 @@ void showMessage(BuildContext context, String message) {
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 2),
       showCloseIcon: true,
-      content: Text(message),
+      content: Row(
+        children: [
+          Image.asset("assets/images/icon.png", height: 30, width: 30),
+          const SizedBox(width: 10),
+          Text(message),
+        ],
+      ),
     ),
   );
 }
