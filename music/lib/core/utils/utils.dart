@@ -15,7 +15,11 @@ void showMessage(BuildContext context, String message) {
         children: [
           Image.asset("assets/images/icon.png", height: 30, width: 30),
           const SizedBox(width: 10),
-          Text(message),
+          Text(
+            message,
+            maxLines: 1,
+            style: const TextStyle(overflow: TextOverflow.ellipsis),
+          ),
         ],
       ),
     ),

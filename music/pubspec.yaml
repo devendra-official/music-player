@@ -47,7 +47,6 @@ dependencies:
   file_picker: ^8.0.6
   audio_video_progress_bar: ^2.0.3
   cached_network_image: ^3.3.1
-  supabase_flutter: ^2.5.8
 
 dev_dependencies:
   flutter_test:

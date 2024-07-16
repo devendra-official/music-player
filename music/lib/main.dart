@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:music/core/secrets/api_key.dart';
 import 'package:music/core/server/server.dart';
 import 'package:music/core/theme/theme.dart';
 import 'package:music/core/utils/utils.dart';
@@ -17,17 +16,11 @@ import 'package:music/features/music/view%20model/cubit/audiolist_cubit.dart';
 import 'package:music/features/search/view%20model/cubit/search_cubit.dart';
 import 'package:music/features/upload/view%20model/cubit/upload_cubit.dart';
 import 'package:music/init_dependency.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  await Supabase.initialize(
-    url: SecretKey.supabaseurl,
-    anonKey: SecretKey.supabaseannon,
-  );
-
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
     androidNotificationChannelName: 'Music Player',
